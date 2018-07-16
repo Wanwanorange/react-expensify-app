@@ -62,3 +62,27 @@ test('should not edit expense if id not found', () => {
   const state = expensesReducer(expenses, action);
   expect(state).toEqual(expenses);
 });
+
+test('should set expenses', () => {
+  const newExpenses = [{
+    id: '98',
+    description: 'milk',
+    note: '',
+    amount: 200,
+    createdAt: 0
+  }, {
+    id: '25',
+    description: 'cheese',
+    note: '',
+    amount: 300,
+    createdAt: moment(0).subtract(4, 'd').valueOf()
+  }];
+
+  const action = {
+    type: 'SET_EXPENSES',
+    expenses: newExpenses
+  };
+
+  const state = expensesReducer(expenses, action);
+  expect(state).toEqual(newExpenses);
+});
