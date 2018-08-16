@@ -8,15 +8,16 @@ export const addExpense = (expense) => ({
 });
 
 export const startAddExpense = (expenseData = {}) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const uid = getState().auth.uid;
     const {
       description = '',
-      notes = '',
+      note = '',
       amount = 0,
       createdAt = 0
     } = expenseData;
-    const expense = { description, notes, amount, createdAt };
-    return database.ref('expenses')
+    const expense = { description, note, amount, createdAt };
+    return database.ref(`users/${uid}/expenses`)
       .push(expense)
       .then((ref) => {
         dispatch(addExpense({
@@ -34,24 +35,26 @@ export const removeExpense = ({ id } = {}) => ({
 });
 
 export const startRemoveExpense = ({ id } = {}) => {
-  return (dispatch) => {
-    return database.ref(`expenses/${id}`).remove().then(() => {
+  return (dispatch, getState) => {
+    const uid = getState().auth.uid;
+    return database.ref(`users/${uid}/expenses/${id}`).remove().then(() => {
       dispatch(removeExpense({ id }));
     });
   };
 };
 
 //EDIT_EXPENSE
-export const editExpense = ({ id }, update) => ({
+export const editExpense = (id, update) => ({
   type: 'EDIT_EXPENSE',
   id,
   update
 });
 
-export const startEditExpense = ({ id }, update) => {
-  return (dispatch) => {
-    return database.ref(`expenses/${id}`).update(update).then(() => {
-      dispatch(editExpense({ id }, update));
+export const startEditExpense = (id, update) => {
+  return (dispatch, getState) => {
+    const uid = getState().auth.uid;
+    return database.ref(`users/${uid}/expenses/${id}`).update(update).then(() => {
+      dispatch(editExpense(id, update));
     });
   }
 };
@@ -64,8 +67,9 @@ export const setExpenses = (expenses) => ({
 
 export const startSetExpenses = () => {
 
-  return (dispatch) => {
-    return database.ref('expenses')
+  return (dispatch, getState) => {
+    const uid = getState().auth.uid;
+    return database.ref(`users/${uid}/expenses`)
       .once('value')
       .then((snapshot) => {
         const expenseData = [];

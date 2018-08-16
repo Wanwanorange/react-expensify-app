@@ -26,7 +26,7 @@ const removeExpense = ({ id } = {}) => ({
 });
 
 //EDIT_EXPENSE
-const editExpense = ({ id }, update) => ({
+const editExpense = (id, update) => ({
   type: 'EDIT_EXPENSE',
   id,
   update
